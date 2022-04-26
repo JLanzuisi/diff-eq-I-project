@@ -1,0 +1,316 @@
+\documentclass[11pt]{scrartcl}
+
+\errorstopmode
+
+\usepackage[spanish]{babel}
+\usepackage{etoolbox}
+\usepackage{ifthen}
+\usepackage
+	[
+		usenames,
+		dvipsnames,
+	]
+{xcolor}
+\usepackage
+	[
+		colorlinks=true,
+		allcolors=blue,
+	]
+	{hyperref}
+\usepackage{url}
+\usepackage{mathtools}
+
+\usepackage{unicode-math}
+\setmainfont{Latin Modern Roman}
+\setsansfont
+	[ Scale=MatchLowercase, ]
+	{Josefin Sans Light}
+
+\KOMAoptions
+	{
+		twocolumn,
+		DIV=calc,
+		abstract=yes,
+		bibliography=openstyle,
+		toc=flat,
+		parskip=half,
+	}
+
+\setkomafont{title}{\normalfont\sffamily}
+\setkomafont{subtitle}{\normalfont}
+\setkomafont{subject}{\normalfont\normalsize\addfontfeatures{LetterSpace=10}}
+\setkomafont{date}{\normalfont\normalsize}
+\setkomafont{section}{\normalfont\sffamily\Large}
+
+\RedeclareSectionCommands
+  [
+    tocentryformat=\normalfont,
+    tocpagenumberformat=\normalfont
+  ]
+  {section}
+
+\author{Jhonny Lanzuisi}
+\title{\LARGE Cadenas de Markov de tiempo continuo}
+\subtitle{Ecuaciones diferenciales en procesos estocásticos}
+\subject{ECUACIONES DIFERENCIALES I}
+\date{\today}
+\titlehead{Universidad Simón Bolívar\hfill Matemáticas Puras y Aplicadas}
+
+\newenvironment{definicion}
+	{
+		\textbf{Definición}.
+	}
+	{}
+
+\newcounter{teo}
+\newenvironment{teorema}
+	{
+		\stepcounter{teo}
+		\textbf{Teorema \theteo}.
+	}
+	{}
+
+\newenvironment{demostracion}
+	{
+		\emph{Demostración}.
+	}
+	{}
+
+\newcommand{\Prob}
+	{
+		\mathbb{P}
+	}
+
+\newcommand{\Mat}[1][]
+	{
+		\ifthenelse{\equal{#1}{}}
+			{\mathbf{P}}
+			{\mathbf{#1}}
+	}
+
+\newcommand{\SepRule}
+	{
+		\par
+		\rule{.35\linewidth}{.8pt}\hfill
+	}
+
+\makeatletter
+	\newcommand{\pushright}[1]
+		{
+			\ifmeasuring@#1\else\omit\hfill$\displaystyle#1$\fi\ignorespaces
+		}
+	\newcommand{\pushleft}[1]
+		{
+			\ifmeasuring@#1\else\omit$\displaystyle#1$\hfill\fi\ignorespaces
+		}
+\makeatother
+
+\begin{document}
+\maketitle
+
+\raggedbottom
+\begin{abstract}
+Utilizando las cadenas de Markov de tiempo continuo
+se logra dar un ejemplo de una aplicación de la teoría
+de ecuaciones diferenciales en la ecuación de Kolmogorov.
+\end{abstract}
+
+\section{Introducción}
+Muchos procesos aleatorios operan en espacios discretos
+pero cambian su valor en cualquier instante de tiempo,
+en vez de intervalos regulares: átomos radioactivos que decaen,
+la cantidad de moléculas en una reacción química,
+poblaciones con nacimientos/muertes, etc.
+
+Estos procesos lucen como una función a trozos con saltos
+que ocurren en unidades de tiempo continuas.
+Estos procesos pueden modelarse elegantemente usando
+las cadenas de Markov de tiempo continuo.
+
+El presente texto dará las nociones básicas de dichas
+cadenas de markov hasta llegar a la ecuación de
+Kolmogorov, donde se ve la relación entre estos
+procesos estocásticos y las E.\,D.\,O. de primer orden.
+
+\section{Definición básica}
+
+\begin{definicion}
+	Sea $X = X_t$ una familia de variables aleatorias que toman valores
+	de un espacio finito o numerable $S$ (que a partir de ahora consideraremos
+	un subconjunto de los enteros).
+	$X$ es una cadena de Markov de tiempo continuo si satisface la propiedad de
+	Markov:
+	\begin{align*}
+		& \Prob\bigl(X_{t_n} = i_n\mid X_{t_1}=i_1,\dots,X_{t_{n-1}}=i_{n-1}\bigr)\\
+		=\;&
+		\Prob\bigl(X_{t_n} =i_n\mid X_{t_{n-1}}=i_{n-1} \bigr)
+	\end{align*}
+	para todo $i_1,\dots,i_n\in S$ y cualquier suseción $0\leq t_1\leq\dots\leq t_n$
+	de instantes de tiempo.
+
+	El proceso es \emph{homogeneo respecto del tiempo} si la probabilidad condicional
+	no depende del instante actual, esto es:
+	\begin{align*}
+		 & \Prob\bigl(X_{t+s} = j\mid X_s = i\bigr) \\
+		=&\; \Prob\bigl(X_t = j\mid X_0 = i\bigr),\quad s\geq0.
+	\end{align*}
+\end{definicion}
+\SepRule
+
+Las cadenas de markov que consideraremos serán siempre homogenas respecto
+del tiempo y además regulares o \emph{continuas por la derecha}.
+
+La propiedad de Markov de la definción anterior nos dice que
+el estado del proceso no depende de toda su historia sino que depende
+solamente del pasado inmmediato.
+
+\section{Probabilidades de transición}
+
+\begin{definicion}
+	La probabilidad de transición de una cadena homogena es:
+	\[
+		P_{ij}(t) = \Prob\bigl( X_{t+s} = j\mid X_s = i\bigr).
+	\]
+	La matriz cuyas componentes $(i,j)$ son $P_{ij}(t)$ es la
+	\emph{matriz de transición}.
+\end{definicion}
+
+Demostramos ahora la ecuación de Chapman-Kolmogorov:
+
+\begin{teorema}
+	Sea $\Mat(t)$ la matriz de transición de una cadena homogenea,
+	entonces:
+	\[
+		\Mat(t+s) = \Mat(t)\Mat(s),
+	\]
+	si, y solo si,
+	\[
+		P_{ij}(t+s) = \sum_{k\in S} P_{ik}(t) P_{kj}(s)
+	\]
+\end{teorema}
+
+\begin{demostracion}
+	\begin{align*}
+		& P_{ij}(s+t) \\
+		&= \Prob\bigl(X_{s+t} = j\mid X_0 = i\bigr) \\
+		&\quad (\text{\small Ley de probabilidad total})\\
+		&= \sum_k \Prob\bigl(X_{s+t} = j\mid X_t = k, X_0 = i\bigr)\\[-1em]
+				&\pushright{\Prob\bigl(X_t = k\mid X_0 = i\bigr)}\\
+		&\quad (\text{\small Propiedad de Markov})\\
+		&= \sum_k \Prob\bigl(X_{s+t} = j\mid X_t = k\bigr)
+				\Prob\bigl(X_t = k\mid X_0 = i\bigr)\\
+ 		&\quad (\text{\small Homogeneidad})\\
+		&= \sum_k P_{ik}(t) P_{kj}(t)
+	\end{align*}
+\end{demostracion}
+\SepRule
+
+La matriz de transición nos da toda la información
+que necesitamos para caracterizar la cadena.
+El problema es que hace falta conocer las probabilidades
+$P_{ij}(t)$ para todo tiempo $t$.
+
+Una forma mas sencilla, que será central en la ecuación de
+Kolmogorov, es usar el generador $\Mat[Q]$ descrito a continuación.
+
+\section{Generador infinitesimal}
+
+Para esta sección asumiremos que el espacio muestral $S$
+es finito. Los resultados obtenidos también se cumplen en
+el caso cuando $S$ es numerable, pero en bsuca de hacer la
+exposición breve taratremos aquí de el caso más simple.
+
+\begin{definicion}
+	Sea $X=(X_t)_{t\geq0}$ una cadena de Markov de tiempo
+	continuo con matriz de transición $\Mat(t)$. Supongamos
+	que $\Mat(t)$ es diferenciable por la derecha en $t=0$.
+	Entonces el generador de la cadena de Markov es la matriz:
+	\[
+		\Mat[Q] = \lim_{h\to0^+} \frac{\Mat(t) - \Mat[I]}{h},
+	\]
+	donde $\Mat[I]$ es la matriz identidad (recordemos que $\Mat(0)=\Mat[I]$).
+\end{definicion}
+
+\begin{teorema}
+	Algunas propiedades de la matriz generadora que se derivan directamente
+	de la definición son las siguientes. Sea $q_{ij}$ la entrada $(i,j)$ de
+	la matriz generadora.
+	\begin{enumerate}
+		\item La suma de los elementos en cada fila es 0,
+			esto es, $\sum_j q_{ij} = 0$.
+		\item $q_{ij}\geq0$ para $i\neq j$.
+		\item $q_{ii}<0$.
+	\end{enumerate}
+\end{teorema}
+
+\begin{demostracion}
+	\begin{enumerate}
+		\item Tenemos que $\sum_j P_{ij}(t)=1$ puesto que dicha suma
+		representa la probabilidad de ir desde el estado $i$ a cualquier
+		otro estado posible. Evidentemente la suma de los elementos de
+		cada fila de la identidad es también $1$.
+		\item Como $i\neq j$ se sigue que $P_{ij}(t)$ es mayor
+		que el correspondiente elemento de la matriz identidad,
+		pues estos son todos cero.
+		\item En este último caso, $P_{ij}(t) <1$ mientras que en
+		la matriz identidad los elementos de la diagonal son 
+		exactamente $1$.
+	\end{enumerate}
+\end{demostracion}
+
+\section{Ecuación de Kolmogorov}
+
+El siguiente teorema, llamado ecuación de komogorov,
+que enunciamos sin demostración,
+permite caracterizar la matriz de transición completamente
+si se tiene la matriz generadora.
+
+\begin{teorema}
+	Dada una cadena de Markov de tiempo continuo con generador
+	$\Mat[Q]$ la matriz de transición $\Mat(t)$ cambia de acuerdo
+	con la siguiente expresión:
+	\[
+		\Mat'(t) = \Mat(t)\Mat[Q].
+	\]
+\end{teorema}
+
+El teorema anterior nos da una ecuación diferencial de primer orden
+que se puede resolver de forma explícita:
+\[
+	\Mat(t) = e^{\Mat[Q]t},
+\]
+donde se evidencia que solo hace falta conocer la matriz $\Mat[Q]$
+para tener también la matriz de transición $\Mat$.
+\appendix
+
+\setbibpreamble
+	{%
+		La mayoría de las referencias provienen de
+		transcripciones de cursos de distintas universidades.
+		Todos los materiales usados se pueden conseguir en formato
+		PDF con el enlace que se especifica.%
+	}
+
+\begin{thebibliography}{}
+	\bibitem{holmes}
+		Miranda Holmes-Cerfon.
+		``Lecture 4: Continuous-time Markov Chains".
+		2019.
+		\url{https://cims.nyu.edu/~holmes/teaching/asa19/handout_Lecture4_2019.pdf}
+	\bibitem{lalley}
+		Steven P. Lalley.
+		``Continuos Time Markov Chains".
+		2013.
+		\url{https://galton.uchicago.edu/~lalley/Courses/313/}
+	\bibitem{takahara}
+		Glen Takahara.
+		``Continuous-Time Markov Chains - Introduction"
+		2017.
+		\url{https://mast.queensu.ca/~stat455/lecturenotes/set5.pdf}
+		
+\end{thebibliography}
+
+\tableofcontents
+
+\end{document}
+

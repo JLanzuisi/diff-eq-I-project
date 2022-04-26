@@ -1,0 +1,245 @@
+\documentclass{scrartcl}
+
+\errorstopmode
+
+\usepackage[spanish]{babel}
+\usepackage{etoolbox}
+\usepackage{ifthen}
+\usepackage
+	[
+		usenames,
+		dvipsnames,
+	]
+{xcolor}
+\usepackage
+	[
+		colorlinks=true,
+		allcolors=blue,
+	]
+	{hyperref}
+\usepackage{url}
+\usepackage{mathtools}
+
+\usepackage{unicode-math}
+\setmainfont{Latin Modern Roman}
+\setsansfont
+	[ Scale=MatchLowercase, ]
+	{Josefin Sans Light}
+
+\KOMAoptions
+	{
+		paper=a4,
+		paper=landscape,
+		fontsize=20,
+		DIV=calc,
+		abstract=yes,
+		bibliography=openstyle,
+		toc=flat,
+		parskip=half,
+		titlepage=yes,
+	}
+
+\setkomafont{title}{\normalfont\sffamily}
+\setkomafont{subtitle}{\normalfont}
+\setkomafont{subject}{\normalfont\normalsize\addfontfeatures{LetterSpace=10}}
+\setkomafont{date}{\normalfont\normalsize}
+\setkomafont{section}{\normalfont\sffamily\Large}
+
+\RedeclareSectionCommands
+  [
+    tocentryformat=\normalfont,
+    tocpagenumberformat=\normalfont
+  ]
+  {section}
+
+\author{Jhonny Lanzuisi}
+\title{\LARGE Cadenas de Markov de tiempo continuo}
+\subtitle{Ecuaciones diferenciales en procesos estocásticos}
+\subject{ECUACIONES DIFERENCIALES I}
+\date{\today}
+\titlehead{Universidad Simón Bolívar\hfill Matemáticas Puras y Aplicadas}
+
+\newenvironment{definicion}
+	{
+		\textbf{Definición}.
+	}
+	{}
+
+\newcounter{teo}
+\newenvironment{teorema}
+	{
+		\textbf{Teorema}.
+	}
+	{}
+
+\newenvironment{demostracion}
+	{
+		\emph{Demostración}.
+	}
+	{}
+
+\newcommand{\Prob}
+	{
+		\mathbb{P}
+	}
+
+\newcommand{\Mat}[1][]
+	{
+		\ifthenelse{\equal{#1}{}}
+			{\mathbf{P}}
+			{\mathbf{#1}}
+	}
+
+\newcommand{\SepRule}
+	{
+		\par
+		\rule{.35\linewidth}{.8pt}\hfill
+	}
+
+\makeatletter
+	\newcommand{\pushright}[1]
+		{
+			\ifmeasuring@#1\else\omit\hfill$\displaystyle#1$\fi\ignorespaces
+		}
+	\newcommand{\pushleft}[1]
+		{
+			\ifmeasuring@#1\else\omit$\displaystyle#1$\hfill\fi\ignorespaces
+		}
+\makeatother
+
+\pagestyle{empty}
+\raggedbottom
+
+\begin{document}
+\maketitle
+
+\section{Introducción}
+Muchos procesos aleatorios operan en espacios discretos
+pero cambian su valor en cualquier instante de tiempo,
+en vez de intervalos regulares: átomos radioactivos que decaen,
+la cantidad de moléculas en una reacción química,
+poblaciones con nacimientos/muertes, etc.
+
+Estos procesos lucen como una función a trozos con saltos
+que ocurren en unidades de tiempo continuas.
+Estos procesos pueden modelarse elegantemente usando
+las cadenas de Markov de tiempo continuo.
+
+Esta presentación dará las nociones básicas de dichas
+cadenas de markov hasta llegar a la ecuación de
+Kolmogorov, donde se ve la relación entre estos
+procesos estocásticos y las E.\,D.\,O. de primer orden.
+
+\section{Definición básica}
+
+\begin{definicion}
+	Familia de variables aleatorias que en espacio finito (numerable)
+	que satisfacen la propiedad de Markov:
+	\begin{align*}
+		& \Prob\bigl(X_{t_n} = i_n\mid X_{t_1}=i_1,\dots,X_{t_{n-1}}=i_{n-1}\bigr)\\
+		=\;&
+		\Prob\bigl(X_{t_n} =i_n\mid X_{t_{n-1}}=i_{n-1} \bigr)
+	\end{align*}
+	para todo $i_1,\dots,i_n\in S$ y cualquier suseción $0\leq t_1\leq\dots\leq t_n$
+	de instantes de tiempo.
+
+	El proceso es \emph{homogeneo respecto del tiempo} si la probabilidad condicional
+	no depende del instante actual, esto es:
+	\begin{align*}
+		 & \Prob\bigl(X_{t+s} = j\mid X_s = i\bigr) \\
+		=&\; \Prob\bigl(X_t = j\mid X_0 = i\bigr),\quad s\geq0.
+	\end{align*}
+\end{definicion}
+
+\pagebreak
+\section{Probabilidades de transición}
+
+\begin{definicion}
+	La probabilidad de transición de una cadena homogena es:
+	\[
+		P_{ij}(t) = \Prob\bigl( X_{t+s} = j\mid X_s = i\bigr).
+	\]
+	La matriz cuyas componentes $(i,j)$ son $P_{ij}(t)$ es la
+	\emph{matriz de transición}.
+\end{definicion}
+
+Ecuación de Chapman-Kolmogorov:
+
+\begin{teorema}
+	Sea $\Mat(t)$ la matriz de transición de una cadena homogenea,
+	entonces:
+	\[
+		\Mat(t+s) = \Mat(t)\Mat(s),
+	\]
+	si, y solo si,
+	\[
+		P_{ij}(t+s) = \sum_{k\in S} P_{ik}(t) P_{kj}(s)
+	\]
+\end{teorema}
+
+\section{Generador infinitesimal}
+
+\begin{definicion}
+	El generador de la cadena de Markov es la matriz:
+	\[
+		\Mat[Q] = \lim_{h\to0^+} \frac{\Mat(t) - \Mat[I]}{h},
+	\]
+	donde $\Mat[I]$ es la matriz identidad (recordemos que $\Mat(0)=\Mat[I]$).
+\end{definicion}
+
+\begin{teorema}
+	Sea $q_{ij}$ la entrada $(i,j)$ de la matriz generadora.
+	\begin{enumerate}
+		\item La suma de los elementos en cada fila es 0,
+			esto es, $\sum_j q_{ij} = 0$.
+		\item $q_{ij}\geq0$ para $i\neq j$.
+		\item $q_{ii}<0$.
+	\end{enumerate}
+\end{teorema}
+
+\section{Ecuación de Kolmogorov}
+
+\begin{teorema}
+	Dada una cadena de Markov de tiempo continuo con generador
+	$\Mat[Q]$ la matriz de transición $\Mat(t)$ cambia de acuerdo
+	con la siguiente expresión:
+	\[
+		\Mat'(t) = \Mat(t)\Mat[Q].
+	\]
+\end{teorema}
+
+Se puede resolver de forma explícita:
+\[
+	\Mat(t) = e^{\Mat[Q]t},
+\]
+\pagebreak
+\appendix
+\setbibpreamble
+	{%
+		La mayoría de las referencias provienen de
+		transcripciones de cursos de distintas universidades.
+		Todos los materiales usados se pueden conseguir en formato
+		PDF con el enlace que se especifica.%
+	}
+
+\begin{thebibliography}{}
+	\bibitem{holmes}
+		Miranda Holmes-Cerfon.
+		``Lecture 4: Continuous-time Markov Chains".
+		2019.
+		\url{https://cims.nyu.edu/~holmes/teaching/asa19/handout_Lecture4_2019.pdf}
+	\bibitem{lalley}
+		Steven P. Lalley.
+		``Continuos Time Markov Chains".
+		2013.
+		\url{https://galton.uchicago.edu/~lalley/Courses/313/}
+	\bibitem{takahara}
+		Glen Takahara.
+		``Continuous-Time Markov Chains - Introduction"
+		2017.
+		\url{https://mast.queensu.ca/~stat455/lecturenotes/set5.pdf}
+		
+\end{thebibliography}
+
+\end{document}
+
