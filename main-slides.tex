@@ -182,7 +182,7 @@ Ecuación de Chapman-Kolmogorov:
 \begin{definicion}
 	El generador de la cadena de Markov es la matriz:
 	\[
-		\Mat[Q] = \lim_{h\to0^+} \frac{\Mat(t) - \Mat[I]}{h},
+		\Mat[Q] = \lim_{h\to0^+} \frac{\Mat(h) - \Mat[I]}{h},
 	\]
 	donde $\Mat[I]$ es la matriz identidad (recordemos que $\Mat(0)=\Mat[I]$).
 \end{definicion}
@@ -212,6 +212,8 @@ Se puede resolver de forma explícita:
 \[
 	\Mat(t) = e^{\Mat[Q]t},
 \]
+donde $e^{\Mat[Q]t} = \sum_{n=0}^\infty \frac{1}{n!} Q^n t^n$.
+
 \pagebreak
 \appendix
 \setbibpreamble

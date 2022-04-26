@@ -226,7 +226,7 @@ exposición breve taratremos aquí de el caso más simple.
 	que $\Mat(t)$ es diferenciable por la derecha en $t=0$.
 	Entonces el generador de la cadena de Markov es la matriz:
 	\[
-		\Mat[Q] = \lim_{h\to0^+} \frac{\Mat(t) - \Mat[I]}{h},
+		\Mat[Q] = \lim_{h\to0^+} \frac{\Mat(h) - \Mat[I]}{h},
 	\]
 	donde $\Mat[I]$ es la matriz identidad (recordemos que $\Mat(0)=\Mat[I]$).
 \end{definicion}
@@ -279,7 +279,9 @@ que se puede resolver de forma explícita:
 \[
 	\Mat(t) = e^{\Mat[Q]t},
 \]
-donde se evidencia que solo hace falta conocer la matriz $\Mat[Q]$
+donde $e^{\Mat[Q]t} = \sum_{n=0}^\infty \frac{1}{n!} Q^n t^n$.
+
+De esto se ve que solo hace falta conocer la matriz $\Mat[Q]$
 para tener también la matriz de transición $\Mat$.
 \appendix
 
