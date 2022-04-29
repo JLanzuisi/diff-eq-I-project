@@ -21,16 +21,27 @@
 \usepackage{mathtools}
 
 \usepackage{unicode-math}
-\setmainfont{Latin Modern Roman}
+\setmainfont
+	[ Numbers=OldStyle, ]
+	{XCharter}
 \setsansfont
+	[ 
+		Scale=MatchLowercase, 
+		SmallCapsFeatures={RawFeature={+c2sc},LetterSpace=6},
+		Numbers=OldStyle,
+	]
+	{Fira Sans}
+\setmathfont{XCharter Math}
+\setmonofont
 	[ Scale=MatchLowercase, ]
-	{Josefin Sans Light}
+	{Fira Mono}
+\linespread{1.05}
 
 \KOMAoptions
 	{
 		paper=a4,
 		paper=landscape,
-		fontsize=20,
+		fontsize=18,
 		DIV=calc,
 		abstract=yes,
 		bibliography=openstyle,
@@ -43,7 +54,7 @@
 \setkomafont{subtitle}{\normalfont}
 \setkomafont{subject}{\normalfont\normalsize\addfontfeatures{LetterSpace=10}}
 \setkomafont{date}{\normalfont\normalsize}
-\setkomafont{section}{\normalfont\sffamily\Large}
+\setkomafont{section}{\normalfont\sffamily\large\scshape}
 
 \RedeclareSectionCommands
   [

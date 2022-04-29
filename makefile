@@ -2,7 +2,7 @@ LATEX = texfot latexmk --lualatex
 TEXFILE = main
 
 all:
-	$(LATEX) $(TEXFILE).tex
+	time $(LATEX) $(TEXFILE).tex
   
 slides: all
-	$(LATEX) $(TEXFILE)-slides.tex
+	time $(LATEX) $(TEXFILE)-slides.tex
